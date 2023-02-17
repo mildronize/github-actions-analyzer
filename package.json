@@ -12,9 +12,10 @@
   "author": "Thada Wangthammang",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^18.13.0",
     "ava": "^5.2.0",
-    "tsx": "^3.12.3",
-    "esbuild-register": "^3.4.2"
+    "esbuild-register": "^3.4.2",
+    "tsx": "^3.12.3"
   },
   "ava": {
     "extensions": [
@@ -23,5 +24,7 @@
     "require": [
       "esbuild-register"
     ]
+  },
+  "dependencies": {
   }
 }

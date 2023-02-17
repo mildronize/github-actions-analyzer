@@ -1,14 +1,31 @@
 # Simple TypeScript Boilerplate
 
-## Use this repo
-
-```
-git clone https://github.com/mildronize/simple-typescript-boilerplate.git [project_name]
-```
-
+## Dev 
 ```bash
 # start
 npm start
 # Test watch mode
 npm run test:watch
 ```
+
+## Commandline
+
+- init -- Load all listed repo with credentail
+
+```mermaid
+
+```
+
+ลอก https://github.com/nrwl/nx/tree/master/graph
+demo: https://nrwl-nx-examples-dep-graph.netlify.app/?focus=cart#/projects
+Doc: https://nx.dev/core-features/explore-graph
+
+
+- Lib ที่น่าสนใจ จาก nx (nrwl/nx/packages/nx)
+  - https://www.npmjs.com/package/cz-git -- git commit interative tool
+  - https://www.npmjs.com/package/minimatch -- Converting glob expressions into JavaScript `RegExp` objects.
+  - `yargs`, `yargs-parser` -- commander alternative
+  - `v8-compile-cache` -- can cache a nodejs intrepreter
+  - https://www.npmjs.com/package/tmp -- A simple temporary file and directory creator for node.js.
+  - chalk
+  - 
