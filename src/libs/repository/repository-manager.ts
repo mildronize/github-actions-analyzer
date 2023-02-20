@@ -1,6 +1,7 @@
-import { setDefaultValue } from "../utils";
-import type { PartialRequired } from "../types";
-
+import { setDefaultValue } from '../utils';
+import type { PartialRequired } from '../types';
+import '../exceptions/not-implemented-exception';
+import { NotImplementedException } from '../exceptions/not-implemented-exception';
 
 interface IRepositoryManagerConfig {
   /**
@@ -9,31 +10,31 @@ interface IRepositoryManagerConfig {
   cwd?: string;
 }
 
-interface IGithubRepository {
-  repository: string;
-  /**
-   * Empty use default branch
-   */
-  ref?: string;
-  token: string;
-  /**
-   * GitHub Actions paths, using glob pattern
-   */
-  actionsPath: string[];
-}
-
-type RepositoryManagerConfig = PartialRequired<IRepositoryManagerConfig, "cwd">;
+type DefaultConfigProp = 'cwd';
 
 export class RepositoryManager {
-  config: RepositoryManagerConfig;
-  public readonly workingDirectory = ".repositories";
+  config: PartialRequired<IRepositoryManagerConfig, DefaultConfigProp>;
+  public readonly workingDirectory = '.repositories';
 
   constructor(_config: IRepositoryManagerConfig) {
     this.config = setDefaultValue(_config, {
       cwd: process.cwd(),
-    }) as RepositoryManagerConfig;
+    }) as PartialRequired<IRepositoryManagerConfig, DefaultConfigProp>;
   }
 
+  public checkoutMany() {
+    /**
+     *  ## Assume we've lib to download repo from github
+        - This can help to use github actions locally, https://stackoverflow.com/questions/63722151/set-github-actions-input-value-for-local-testing
+        - https://github.com/actions/checkout
+
+        ### Format to download
+        - `.repositories`
+          - `org`
+            - `repo name`
+     */
+    throw new NotImplementedException();
+  }
 }
 
 const test = new RepositoryManager({});
