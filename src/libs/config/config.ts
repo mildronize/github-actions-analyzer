@@ -1,4 +1,4 @@
-import { GithubRepositoryData } from '../repository';
+import { GithubRepository, GithubRepositoryData, RepositoryValidator } from '../repository';
 import fsPromise from 'node:fs/promises';
 import fs from 'node:fs';
 import yaml from 'yaml';
@@ -6,7 +6,7 @@ import { PartialRequired } from '../types';
 import { setDefaultValue } from '../utils';
 
 interface IConfig {
-  repositories: GithubRepositoryData;
+  repositories: GithubRepositoryData[];
 }
 
 interface IConfigOption {
@@ -19,6 +19,9 @@ interface IConfigOption {
 type DefaultConfigProp = 'cwd';
 
 export class Config {
+
+  config!: IConfig;
+
   option: PartialRequired<IConfigOption, DefaultConfigProp>;
   constructor(_option?: IConfigOption) {
     this.option = setDefaultValue(_option || {}, {
@@ -28,9 +31,12 @@ export class Config {
 
   async load(path: string) {
     const configFile = await fsPromise.readFile(path, 'utf8');
-    const config = yaml.parse(configFile) as IConfig;
-    console.log(config);
+    this.config = yaml.parse(configFile) as IConfig;
+    this.validate();
+    console.log(JSON.stringify(this.config, null ,2));
   }
 
-  validate() {}
+  validate() {
+    this.config.repositories = RepositoryValidator.validateArray(this.config.repositories);
+  }
 }
