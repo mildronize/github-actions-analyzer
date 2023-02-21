@@ -5,15 +5,6 @@ import {
   WorkflowTrigger_WorkflowRun,
 } from './workflow_trigger';
 
-/**
- * Workflow Format
- *
- * "/name.yml"
- * "/name.yaml"
- * "/name/action.yml"
- * "/name/action.yaml"
- */
-
 export interface GithubWorkflows {
   /**
    * Workflow Name

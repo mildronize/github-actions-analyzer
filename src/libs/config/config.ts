@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import yaml from 'yaml';
 import { PartialRequired } from '../types';
 import { setDefaultValue } from '../utils';
+import path from 'node:path';
 
 interface IConfig {
   repositories: GithubRepositoryData[];
@@ -16,27 +17,19 @@ interface IConfigOption {
   cwd?: string;
 }
 
-type DefaultConfigProp = 'cwd';
-
 export class Config {
-
   config!: IConfig;
 
-  option: PartialRequired<IConfigOption, DefaultConfigProp>;
-  constructor(_option?: IConfigOption) {
-    this.option = setDefaultValue(_option || {}, {
-      cwd: process.cwd(),
-    }) as PartialRequired<IConfigOption, DefaultConfigProp>;
-  }
+  constructor(protected option?: IConfigOption) {}
 
-  async load(path: string) {
-    const configFile = await fsPromise.readFile(path, 'utf8');
+  async load(file: string) {
+    const actualPath = this.option?.cwd ? path.join(this.option.cwd, file) : file;
+    const configFile = await fsPromise.readFile(actualPath, 'utf8');
+    // TODO: assume schema is correct, using zod later
     this.config = yaml.parse(configFile) as IConfig;
-    this.validate();
-    console.log(JSON.stringify(this.config, null ,2));
   }
 
-  validate() {
-    this.config.repositories = RepositoryValidator.validateArray(this.config.repositories);
+  public getConfig() {
+    return this.config;
   }
 }

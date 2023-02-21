@@ -14,7 +14,7 @@ export const githubRepositorySchema = z.object({
   /**
    * GitHub Actions paths, using glob pattern
    */
-  actionsPath: z.array(z.string()).optional(),
+  actionsPaths: z.array(z.string()).optional(),
 });
 
 export type GithubRepository = z.infer<typeof githubRepositorySchema>;

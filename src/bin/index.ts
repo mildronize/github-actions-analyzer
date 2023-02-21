@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
-import { Config } from '../libs/config';
+import { GithubActionsAnalyzer } from '..';
 
 (async () => {
   const argv = await yargs(process.argv.slice(2))
@@ -17,8 +17,7 @@ import { Config } from '../libs/config';
   }
 
   console.log('The width is:', argv.file);
-  const config = new Config();
-  await config.load(argv.file);
+  await new GithubActionsAnalyzer().init(argv.file);
   //   .scriptName('line-count')
   //   .usage('Usage: $0 <command> [options]')
   //   .command('count', 'Count the lines in a file')
