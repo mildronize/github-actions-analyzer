@@ -12,8 +12,10 @@ export class GithubActionsAnalyzer {
     const repositoryManager = new RepositoryManager(config.getConfig().repositories);
     repositoryManager.validate();
     console.log(JSON.stringify(repositoryManager.getRepositories(), null, 2));
-    console.log('findGithubActionsFiles',
-      await repositoryManager.findGithubActionsFiles(repositoryManager.getRepositories()[0])
-    );
+    const repos = repositoryManager.getRepositories();
+    console.log('findGithubActionsFiles');
+    for(const repo of repos){
+      console.log(await repositoryManager.findGithubActionsFiles(repo));
+    }
   }
 }

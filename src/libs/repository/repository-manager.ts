@@ -35,13 +35,14 @@ export class RepositoryManager {
    */
 
   public generateGlobPatternActionsPath = (repository: GithubRepositoryData, actionsPath: string) => {
+    const repoWithRef = repository.ref ? [repository.repo, repository.ref.replaceAll('/', '__')].join('@'): repository.repo;
     return [
-      path.join(this.workingDirectory, repository.org, repository.repo, actionsPath, '*.yml'),
-      path.join(this.workingDirectory, repository.org, repository.repo, actionsPath, '*.yaml'),
+      path.join(this.workingDirectory, repository.org, repoWithRef, actionsPath, '*.yml'),
+      path.join(this.workingDirectory, repository.org, repoWithRef, actionsPath, '*.yaml'),
       // prettier-ignore
-      path.join(this.workingDirectory, repository.org, repository.repo,actionsPath, '**/action.yml'),
+      path.join(this.workingDirectory, repository.org, repoWithRef,actionsPath, '**/action.yml'),
       // prettier-ignore
-      path.join(this.workingDirectory, repository.org, repository.repo,actionsPath, '**/action.yaml'),
+      path.join(this.workingDirectory, repository.org, repoWithRef,actionsPath, '**/action.yaml'),
     ];
   };
 

@@ -25,7 +25,7 @@ export class RepositoryValidator {
     if(split?.length !== 2) throw Error(`repository '${repository.repository}' pattern should be 'org/repository_name'`);
     repository.org = split[0];
     repository.repo = split[1];
-    if (!repository.actionsPath) repository.actionsPath = [];
+    if (!repository.actionsPaths) repository.actionsPaths = [];
     return repository as GithubRepositoryData;
   }
 }
