@@ -15,7 +15,6 @@ export class GithubActionsAnalyzer {
     await config.load(configFile);
     const repositoryManager = new RepositoryManager(config.getConfig().repositories);
     repositoryManager.validate();
-    // console.log(JSON.stringify(repositoryManager.getRepositories(), null, 2));
     await repositoryManager.processData();
     this._repositories = repositoryManager.getRepositories();
   }

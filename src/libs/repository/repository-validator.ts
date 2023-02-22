@@ -7,6 +7,7 @@ export interface GithubRepositoryData extends GithubRepository {
 
   actionsFiles?: {
     path: string;
+    // type: 'workflow' | 'composite';
     data: GithubWorkflows;
   }[];
 }

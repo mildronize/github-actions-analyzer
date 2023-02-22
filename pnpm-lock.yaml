@@ -4,6 +4,7 @@ specifiers:
   '@types/node': ^18.13.0
   '@types/yargs': ^17.0.22
   ava: ^5.2.0
+  chalk: ^5.2.0
   esbuild-register: ^3.4.2
   pretty-error: ^4.0.0
   tiny-glob: ^0.2.9
@@ -14,6 +15,7 @@ specifiers:
   zod: ^3.20.6
 
 dependencies:
+  chalk: 5.2.0
   pretty-error: 4.0.0
   tiny-glob: 0.2.9
   yaml: 2.2.1
@@ -824,7 +826,6 @@ packages:
   /chalk/5.2.0:
     resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: true
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}

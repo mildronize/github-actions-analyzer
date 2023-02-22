@@ -12,21 +12,35 @@ export interface CommandRunnerConfig {
 export abstract class CommandRunner {
   public name?: string;
 
-  private config!: CommandRunnerConfig;
+  protected file: Output;
 
-  protected analyzer!: GithubActionsAnalyzer;
-
-  public init(config: CommandRunnerConfig, analyzer: GithubActionsAnalyzer){
-    this.config = config;
-    this.analyzer = analyzer;
+  constructor(private config: CommandRunnerConfig, protected analyzer: GithubActionsAnalyzer) {
+    this.file = new Output(config.output);
   }
 
   public abstract execute(): any;
+}
 
-  public async writeOutput(data: string){
-    if(this.config.output === undefined){
+class Output {
+  constructor(protected outputFile: string | undefined) {}
+  public async write(data: string) {
+    if (this.outputFile === undefined) {
       throw new Error(`Arg ouput need to specify for writing output`);
     }
-    await fsPromise.writeFile(this.config.output, data, 'utf8');
+    await fsPromise.writeFile(this.outputFile, data, 'utf8');
+  }
+
+  public async append(data: string) {
+    if (this.outputFile === undefined) {
+      throw new Error(`Arg ouput need to specify for writing output`);
+    }
+    await fsPromise.appendFile(this.outputFile, data, 'utf8');
+  }
+
+  public async appendLine(data: string) {
+    if (this.outputFile === undefined) {
+      throw new Error(`Arg ouput need to specify for writing output`);
+    }
+    await fsPromise.appendFile(this.outputFile, `${data}\n`, 'utf8');
   }
 }
