@@ -1,8 +1,14 @@
+import { GithubWorkflows } from './github-workflows/github-workflows';
 import { GithubRepository, githubRepositorySchema } from './repository.schema';
 
 export interface GithubRepositoryData extends GithubRepository {
   org: string;
   repo: string;
+
+  actionsFiles?: {
+    path: string;
+    data: GithubWorkflows;
+  }[];
 }
 
 export class RepositoryValidator {

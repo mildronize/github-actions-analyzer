@@ -4,6 +4,8 @@ import { GithubRepository } from './repository.schema';
 import { GithubRepositoryData, RepositoryValidator } from './repository-validator';
 import glob from 'tiny-glob';
 import path from 'node:path';
+import fsPromise from 'node:fs/promises';
+import yaml from 'yaml';
 
 interface IRepositoryManagerOption {
   /**
@@ -23,6 +25,29 @@ export class RepositoryManager {
     return this.repositories;
   }
 
+  private async processActionFiles(actionsFiles: string[]) {
+    const results: NonNullable<GithubRepositoryData['actionsFiles']> = [];
+    const workers = [];
+    for (const file of actionsFiles) {
+      workers.push(fsPromise.readFile(file, 'utf8'));
+    }
+    const rawDataList = await Promise.all(workers);
+    for (const [index, rawData] of rawDataList.entries()) {
+      results.push({
+        data: yaml.parse(rawData),
+        path: actionsFiles[index],
+      });
+    }
+    return results;
+  }
+
+  public async processData() {
+    for (const repo of this.repositories) {
+      const actionsFiles = await this.findGithubActionsFiles(repo);
+      repo.actionsFiles = await this.processActionFiles(actionsFiles || []);
+    }
+  }
+
   /**
    * Workflow Format
    *
@@ -35,7 +60,9 @@ export class RepositoryManager {
    */
 
   public generateGlobPatternActionsPath = (repository: GithubRepositoryData, actionsPath: string) => {
-    const repoWithRef = repository.ref ? [repository.repo, repository.ref.replaceAll('/', '__')].join('@'): repository.repo;
+    const repoWithRef = repository.ref
+      ? [repository.repo, repository.ref.replaceAll('/', '__')].join('@')
+      : repository.repo;
     return [
       path.join(this.workingDirectory, repository.org, repoWithRef, actionsPath, '*.yml'),
       path.join(this.workingDirectory, repository.org, repoWithRef, actionsPath, '*.yaml'),
@@ -57,8 +84,6 @@ export class RepositoryManager {
         ...this.generateGlobPatternActionsPath(repository, this.githubWorkflowsPath),
         ...repositoryGlobPatterns,
       ];
-
-      console.log('globPatterns', globPatterns);
 
       const globWorker = [];
       for (const globPattern of globPatterns) {
