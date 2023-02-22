@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "pretty-error": "^4.0.0",
     "tiny-glob": "^0.2.9",
     "yaml": "^2.2.1",
     "yargs": "^17.7.0",

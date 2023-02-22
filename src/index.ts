@@ -1,25 +1,29 @@
 import path from 'node:path';
-import { Config } from './libs/config';
-import { RepositoryManager } from './libs/repository';
+import { CommandRunner } from './command-runner';
+import PrettyError from 'pretty-error';
+import { GithubActionsAnalyzer } from './github-actions-analyzer';
 
-export function sum(number1: number, number2: number): number {
-  return number1 + number2;
+interface BootstrapConfig {
+  configFile: string;
+  output?: string;
+  commandFile: string;
 }
 
-export class GithubActionsAnalyzer {
-  public async init(file: string) {
-    const config = new Config();
-    await config.load(file);
-    const repositoryManager = new RepositoryManager(config.getConfig().repositories);
-    repositoryManager.validate();
-    console.log(JSON.stringify(repositoryManager.getRepositories(), null, 2));
-    await repositoryManager.processData();
-    for(const repo of repositoryManager.getRepositories()){
-      for(const actionFile of repo.actionsFiles || []){
-        const repoRef = repo.ref ? [repo.repository, repo.ref].join('@'): repo.repository;
-        const actionName = actionFile.data.name ?? path.basename(actionFile.path);
-        console.log(`[${repoRef}] ${actionName}`);
-      }
-    }
+export async function bootstrap(config: BootstrapConfig) {
+  try {
+    // TODO: To fix path resolving later
+    const Command = await import(path.join('..', config.commandFile));
+    const instance: CommandRunner = new Command.default();
+    const analyzer = new GithubActionsAnalyzer()
+    await analyzer.init(config.configFile);
+    instance.init({
+      file: config.configFile,
+      output: config.output,
+    }, analyzer);
+    const commandName = instance.name ?? Command.default.name;
+    console.log(`Running command... '${commandName}'`)
+    await instance.execute();
+  } catch (error) {
+    if (error instanceof Error) console.log(new PrettyError().render(error));
   }
 }

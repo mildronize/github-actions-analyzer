@@ -1,6 +1,4 @@
-import '../exceptions/not-implemented-exception';
 import { NotImplementedException } from '../exceptions/not-implemented-exception';
-import { GithubRepository } from './repository.schema';
 import { GithubRepositoryData, RepositoryValidator } from './repository-validator';
 import glob from 'tiny-glob';
 import path from 'node:path';

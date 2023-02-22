@@ -8,6 +8,12 @@ npm start
 npm run test:watch
 ```
 
+## Run
+
+```bash
+pnpm cli --file repo.yml -c commands/find-actions-checkout-version.command.ts
+```
+
 ## Commandline
 
 - init -- Load all listed repo with credentail
