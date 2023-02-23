@@ -1,5 +1,6 @@
 import fsPromise from 'node:fs/promises';
 import { GithubActionsAnalyzer } from './github-actions-analyzer';
+import { stringifyArrayToCsvRow } from './libs';
 export interface CommandRunnerConfig {
   /**
    * Yaml File Config, using Format `IConfig`
@@ -30,6 +31,9 @@ class Output {
     await fsPromise.writeFile(this.outputFile, data, 'utf8');
   }
 
+  public async writeLine(data: string) {
+    return this.write(`${data}\n`);
+  }
   public async append(data: string) {
     if (this.outputFile === undefined) {
       throw new Error(`Arg ouput need to specify for writing output`);
@@ -38,9 +42,14 @@ class Output {
   }
 
   public async appendLine(data: string) {
-    if (this.outputFile === undefined) {
-      throw new Error(`Arg ouput need to specify for writing output`);
-    }
-    await fsPromise.appendFile(this.outputFile, `${data}\n`, 'utf8');
+    return this.append(`${data}\n`);
+  }
+
+  public async writeLineCsv(array: string[]){
+    return this.writeLine(stringifyArrayToCsvRow(array));
+  }
+
+  public async appendLineCsv(array: string[]){
+    return this.appendLine(stringifyArrayToCsvRow(array));
   }
 }
