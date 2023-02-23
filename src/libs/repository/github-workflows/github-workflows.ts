@@ -107,7 +107,7 @@ type GithubWorkflows_Job = {
   steps: GithubWorkflows_Job_Step[];
 } & Record<string, any>;
 
-type GithubWorkflows_Job_Step = {
+export type GithubWorkflows_Job_Step = {
   name?: string;
   uses?: string;
   with?: Record<string, string>;
