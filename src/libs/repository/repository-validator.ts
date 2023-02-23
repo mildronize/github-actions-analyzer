@@ -1,4 +1,4 @@
-import { GithubWorkflows } from './github-workflows/github-workflows';
+import { DefinedGithubActions, GithubWorkflows } from './github-workflows/github-workflows';
 import { GithubRepository, githubRepositorySchema } from './repository.schema';
 
 export interface GithubRepositoryData extends GithubRepository {
@@ -7,8 +7,7 @@ export interface GithubRepositoryData extends GithubRepository {
 
   actionsFiles?: {
     path: string;
-    // type: 'workflow' | 'composite';
-    data: GithubWorkflows;
+    data: DefinedGithubActions;
   }[];
 }
 

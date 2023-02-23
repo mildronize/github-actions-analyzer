@@ -4,6 +4,7 @@ import glob from 'tiny-glob';
 import path from 'node:path';
 import fsPromise from 'node:fs/promises';
 import yaml from 'yaml';
+import { GithubActions, GithubActionsBase, GithubWorkflows } from './github-workflows/github-workflows';
 
 interface IRepositoryManagerOption {
   /**
@@ -43,6 +44,19 @@ export class RepositoryManager {
     for (const repo of this.repositories) {
       const actionsFiles = await this.findGithubActionsFiles(repo);
       repo.actionsFiles = await this.processActionFiles(actionsFiles || []);
+      this.classifyGithubActionsType(repo.actionsFiles);
+    }
+  }
+
+  public classifyGithubActionsType(actionsFiles?: GithubRepositoryData['actionsFiles']){
+    for(const actionsFile of actionsFiles || []){
+      if((actionsFile.data as GithubWorkflows).jobs !== undefined){
+        (actionsFile.data as GithubWorkflows).type = 'workflow';
+      } else if((actionsFile.data as GithubActions).runs !== undefined) {
+        (actionsFile.data as GithubActions).type = 'actions';
+      } else {
+        (actionsFile.data as GithubActionsBase<any>).type = null;
+      }
     }
   }
 

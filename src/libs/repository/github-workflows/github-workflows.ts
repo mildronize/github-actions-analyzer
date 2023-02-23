@@ -5,13 +5,81 @@ import {
   WorkflowTrigger_WorkflowRun,
 } from './workflow_trigger';
 
-export interface GithubWorkflows {
+export type DefinedGithubActions = GithubActions | GithubWorkflows;
+export type GithubActionsType = 'workflow' | 'actions' | null;
+
+export interface GithubActionsBase<Type extends GithubActionsType> {
+  /**
+   * Special Field for recognize type of actions
+   */
+  type: Type;
+}
+
+/**
+ * [Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#about-yaml-syntax-for-github-actions)
+ * TODO: Cover all fields
+ */
+
+export interface GithubActions extends GithubActionsBase<'actions'> {
+  type: 'actions',
+  /**
+   * Required The name of your action. GitHub displays the name in the Actions tab to help visually identify actions in each job.
+   */
+  name?: string;
+  /**
+   * Optional The name of the action's author.
+   */
+  author?: string;
+  /**
+   * Required A short description of the action.
+   */
+  description?: string;
+
+  inputs?: {
+    [key in string]: GithubActionsInput;
+  };
+
+  outputs?: {
+    [key in string]: GithubActionsOutput;
+  };
+
+  /**
+   * Required Specifies whether this is a JavaScript action, a composite action, or a Docker container action and how the action is executed.
+   */
+  runs?: {
+    using: string;
+    main?: string;
+    steps: GithubWorkflows_Job_Step[];
+  }
+}
+
+interface GithubActionsInput{
+  description: string;
+  required?: boolean;
+  default?: string;
+}
+
+interface GithubActionsOutput{
+  description: string;
+  value: string;
+}
+
+
+
+// ------------------------------------ GithubWorkflows ------------------------------
+
+export interface GithubWorkflows extends GithubActionsBase<'workflow'> {
+  type: 'workflow',
   /**
    * Workflow Name
    */
   name?: string;
 
-  on:
+  /**
+   * `on` prop has exist when `workflow` type
+   */
+
+  on?:
     | WorkflowTrigger_WorkflowDispatch
     | WorkflowTrigger_WorkflowRun
     | WorkflowTrigger_PullRequest
@@ -20,7 +88,10 @@ export interface GithubWorkflows {
 
   env?: Record<string, string>;
 
-  jobs: {
+  /**
+   * `jobs` prop has exist when `workflow` type
+   */
+  jobs?: {
     [key in string]: GithubWorkflows_Job;
   };
 }

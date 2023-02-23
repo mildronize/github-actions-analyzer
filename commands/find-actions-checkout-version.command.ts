@@ -7,17 +7,20 @@ export default class FindActionsCheckoutVersionCommand extends CommandRunner {
 
   public override execute() {
     console.log(`Executing... FindActionsCheckoutVersionCommand`);
-    this.analyzer.printAllGithubActions();
+    // this.analyzer.printAllGithubActions();
     for (const repo of this.analyzer.repositories) {
-      // console.log(repo.actionsFiles);
       for (const actionsFile of repo.actionsFiles || []) {
         const repoRef = repo.ref ? [repo.repository, repo.ref].join('@') : repo.repository;
         const actionName = actionsFile.data.name ?? path.basename(actionsFile.path);
-        if (!actionsFile.data.jobs) {
-          console.error(chalk.red(`${repoRef}: ${actionName}! No job found!`));
+        if (actionsFile.data.type === 'workflow') {
+          if (!actionsFile.data.jobs) console.error(chalk.red(`${repoRef}: ${actionName}! Incomplete workflow, no job found!`));
+          for (const [jobId, job] of Object.entries(actionsFile.data.jobs || {})) {
+            console.log(chalk.blue(`${repoRef}: ${actionName} [${jobId}]`));
+          }
         }
-        for (const [jobId, job] of Object.entries(actionsFile.data.jobs || {})) {
-          console.log(`${repoRef}: ${actionName} [${jobId}]`);
+        if (actionsFile.data.type === 'actions') {
+          if (!actionsFile.data.runs) console.error(chalk.red(`${repoRef}: ${actionName}! Incomplete actions, No runs found!`));
+          console.log(chalk.green(`${repoRef}: ${actionName}: Actions Type`));
         }
       }
     }
